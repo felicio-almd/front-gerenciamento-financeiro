@@ -19,7 +19,7 @@
   <script lang="ts" setup>
   import { useLogin } from '@/composables/login';
   import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+  import { useRouter } from 'vue-router';
   
   const router = useRouter()
 
@@ -36,7 +36,7 @@ import { useRouter } from 'vue-router';
       }
       
       await login()
-    //   router.push('/categories')
+      router.push('/')
     }
   </script>
   

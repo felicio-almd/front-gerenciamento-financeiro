@@ -1,37 +1,148 @@
 <template>
   <h1>Categorias</h1>
 
-  <div>
-    <h2>Lista</h2>
-    <p
-      v-for="category in categories"
-      :key="category.id"
+  <v-sheet
+    border
+    rounded
+  >
+    <v-data-table
+      :headers="headers"
+      :items="categories"
+      :hide-default-footer="categories.length < 11"
     >
-      {{ category.name }}
-      <button @click="teste(category.id)">
-        aaaaaaaaa
-      </button>
-    </p>
-  </div>
+      <template #top>
+        <v-toolbar flat>
+          <v-toolbar-title>
+            <v-icon
+              color="medium-emphasis"
+              icon="mdi-tag-multiple"
+              size="x-small"
+              start
+            />
+            Categorias
+          </v-toolbar-title>
+          <v-spacer />
+          <v-btn
+            class="me-2"
+            prepend-icon="mdi-plus"
+            rounded="lg"
+            text="Nova Categoria"
+            border
+            @click="add"
+          />
+        </v-toolbar>
+      </template>
 
-  <pre>
-    {{ categories }}
-  </pre>
+      <template #item.actions="{ item }">
+        <div class="d-flex ga-2 justify-end">
+          <v-icon
+            color="medium-emphasis"
+            icon="mdi-pencil"
+            size="small"
+            @click="edit(item.id)"
+          />
+          <v-icon
+            color="medium-emphasis"
+            icon="mdi-delete"
+            size="small"
+            @click="remove(item.id)"
+          />
+        </div>
+      </template>
+    </v-data-table>
+  </v-sheet>
+
+  <v-dialog
+    v-model="dialog"
+    max-width="500"
+  >
+    <v-card
+      :subtitle="`${isEditing ? 'Editar' : 'Criar'} Categoria`"
+      :title="`${isEditing ? 'Editar' : 'Adicionar'} Categoria`"
+    >
+      <template #text>
+        <v-row>
+          <v-col cols="12">
+            <v-text-field
+              v-model="record.name"
+              label="Nome da Categoria"
+            />
+          </v-col>
+        </v-row>
+      </template>
+
+      <v-divider />
+
+      <v-card-actions class="bg-surface-light">
+        <v-btn
+          text="Cancelar"
+          variant="plain"
+          @click="dialog = false"
+        />
+        <v-spacer />
+        <v-btn
+          text="Salvar"
+          @click="save"
+        />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts" setup>
+import { ref, onMounted } from 'vue';
 import { useCategoriesStore } from '@/stores/categories';
 import { storeToRefs } from 'pinia';
-import { onMounted } from 'vue';
 
-const store = useCategoriesStore()
+const store = useCategoriesStore();
+const { categories } = storeToRefs(store);
 
-const {categories} = storeToRefs(store)
-onMounted(async()=>{
-  await store.getCategories()
-})
+onMounted(async () => {
+  await store.getCategories();
+});
 
-function teste (id: string) {
-  console.log(id)
-}
+const headers = [
+  { title: 'Nome', key: 'name' },
+  { title: 'Ações', key: 'actions', align: 'end' },
+];
+
+const dialog = ref(false);
+const isEditing = ref(false);
+const record = ref({
+  id: '',
+  name: '',
+});
+
+const add = () => {
+  isEditing.value = false;
+  record.value = { id: '', name: '' };
+  dialog.value = true;
+};
+
+const edit = (id: string) => {
+  const category = categories.value.find((cat) => cat.id === id);
+  if (category) {
+    isEditing.value = true;
+    record.value = { id: category.id, name: category.name };
+    dialog.value = true;
+  }
+};
+
+const remove = async (id: string) => {
+  console.log('deletando:', id);
+  const category = categories.value.find((cat) => cat.id === id);
+  if (category) {
+    await store.deleteCategory(category.id)
+  }
+};
+
+const save = async () => {
+  if (isEditing.value) {
+    console.log('editando:', record.value);
+    await store.updateCategory({ id: record.value.id, name: record.value.name})
+  } else {
+    await store.newCategory({ name: record.value.name });
+  }
+  dialog.value = false;
+};
 </script>

@@ -5,12 +5,32 @@
  */
 
 // Composables
+import { useAuthStore } from '@/stores/auth'
 import { createRouter, createWebHistory } from 'vue-router/auto'
-import { routes } from 'vue-router/auto-routes'
+
+const routes = [
+  {
+    name: "Home",
+    path: "/",
+    component: () => import("@/pages/index.vue"),
+    meta: { requiresAuth: true }
+  },
+  {
+    name: "Categories",
+    path: "/categories",
+    component: () => import("@/pages/categories.vue"),
+    meta: { requiresAuth: true }
+  },
+  {
+    name: "Login",
+    path: "/login",
+    component: () => import("@/pages/login.vue"),
+  }
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
+  routes
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804
@@ -30,6 +50,14 @@ router.onError((err, to) => {
 
 router.isReady().then(() => {
   localStorage.removeItem('vuetify:dynamic-reload')
+})
+
+router.beforeEach(async (to) => {
+  const auth =  useAuthStore()
+  if (to.meta.requiresAuth && !auth.isLogged) {
+    return '/login'
+  }
+
 })
 
 export default router
