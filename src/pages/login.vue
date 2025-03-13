@@ -36,7 +36,7 @@
       }
       
       await login()
-      router.push('/')
+      // router.push('/')
     }
   </script>
   

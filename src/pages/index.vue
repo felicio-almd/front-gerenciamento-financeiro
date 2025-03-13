@@ -1,75 +1,83 @@
 <template>
   <Header />
-  
-  <h3>Tela Principal</h3>
-  <v-sheet
-    border
-    rounded
-  >
-    <v-data-table
-      :headers="headers"
-      :items="movements"
-      :hide-default-footer="movements.length < 11"
-    >
-      <template #top>
-        <v-toolbar flat>
-          <v-toolbar-title>
-            <v-icon
-              color="medium-emphasis"
-              icon="mdi-cash-multiple"
-              size="x-small"
-              start
-            />
-            Movimentações
-          </v-toolbar-title>
-          <v-spacer />
-          <v-btn
-            class="me-2"
-            prepend-icon="mdi-plus"
-            rounded="lg"
-            text="Nova movimentação"
-            border
-            @click="add"
-          />
-        </v-toolbar>
-      </template>
+  <span class="d-flex align-center w-100 justify-center pt-10">
+    <h1>
+      Lista de Movimentações
+    </h1>
+  </span>
+  <v-main class="pt-0">
+    <v-container>
+      <v-sheet
+        border
+        rounded
+      >
+        <v-data-table
+          :headers="headers"
+          :items="movements"
+          :hide-default-footer="movements.length < 11"
+        >
+          <template #top>
+            <v-toolbar flat>
+              <v-toolbar-title>
+                <v-icon
+                  color="medium-emphasis"
+                  icon="mdi-cash-multiple"
+                  size="x-small"
+                  start
+                />
+                Movimentações
+              </v-toolbar-title>
+              <v-spacer />
+              <v-btn
+                class="me-2"
+                prepend-icon="mdi-plus"
+                rounded="lg"
+                text="Nova movimentação"
+                border
+                @click="add"
+              />
+            </v-toolbar>
+          </template>
 
-      <template #item.created_at="{ item }">
-        {{ formatDate(item.created_at) }}
-      </template>
+          <template #item.created_at="{ item }">
+            {{ formatDate(item.created_at) }}
+          </template>
 
-      <template #item.type="{ item }">
-        <v-chip :color="item.type === 'in' ? 'green' : 'red'">
-          {{ item.type === 'in' ? 'Entrada' : 'Saída' }}
-        </v-chip>
-      </template>
+          <template #item.type="{ item }">
+            <v-chip :color="item.type === 'in' ? 'green' : 'red'">
+              {{ item.type === 'in' ? 'Entrada' : 'Saída' }}
+            </v-chip>
+          </template>
 
-      <template #item.value="{ item }">
-        {{ formatCurrency(item.value) }}
-      </template>
+          <template #item.value="{ item }">
+            {{ formatCurrency(item.value) }}
+          </template>
 
-      <template #item.category_id="{ item }">
-        {{ getCategoryName(item.category_id) }}
-      </template>
+          <template #item.category_id="{ item }">
+            {{ getCategoryName(item.category_id) }}
+          </template>
 
-      <template #item.actions="{ item }">
-        <div class="d-flex ga-2 justify-end">
-          <v-icon
-            color="medium-emphasis"
-            icon="mdi-pencil"
-            size="small"
-            @click="edit(item.id)"
-          />
-          <v-icon
-            color="medium-emphasis"
-            icon="mdi-delete"
-            size="small"
-            @click="remove(item.id)"
-          />
-        </div>
-      </template>
-    </v-data-table>
-  </v-sheet>
+          <template #item.actions="{ item }">
+            <div class="d-flex ga-2 justify-center">
+              <v-icon
+                color="medium-emphasis"
+                icon="mdi-pencil"
+                size="small"
+                @click="edit(item.id)"
+              />
+              <v-icon
+                color="medium-emphasis"
+                icon="mdi-delete"
+                size="small"
+                @click="remove(item.id)"
+              />
+            </div>
+          </template>
+        </v-data-table>
+      </v-sheet>
+    </v-container>
+  </v-main>
+  <Footer />
 
   <v-dialog
     v-model="dialog"
@@ -97,6 +105,7 @@
               v-model="record.value"
               label="Valor da Movimentação"
               type="number"
+              @update:model-value="(val) => record.value = Math.max(0, Number(val))"
             />
           </v-col>
         </v-row>
@@ -164,7 +173,7 @@ const headers = [
   { title: 'Categoria', key: 'category_id' },
   { title: 'Descrição', key: 'description' },
   { title: 'Data de Criação', key: 'created_at' },
-  { title: 'Ações', key: 'actions', sortable: false },
+  { title: 'Ações', key: 'actions', sortable: false, align: 'center' },
 ];
 
 const movTypes = [
@@ -177,6 +186,7 @@ const movTypes = [
     value: 'out'
   },
 ]
+
 
 const formatDate = (date: string) => {
   return new Intl.DateTimeFormat('pt-BR').format(new Date(date));
@@ -240,7 +250,4 @@ const remove = (id: string) => {
 </script>
 
 <style lang="scss" scoped>
-  h1 {
-    color: red;
-  }
 </style>

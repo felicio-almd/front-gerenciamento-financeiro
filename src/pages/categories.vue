@@ -1,56 +1,65 @@
 <template>
-  <h1>Categorias</h1>
+  <Header />
+  <span class="d-flex align-center w-100 justify-center pt-10">
+    <h1>
+      Lista de Categorias
+    </h1>
+  </span>
+  <v-main class="pt-0">
+    <v-container>
+      <v-sheet
+        border
+        rounded
+      >
+        <v-data-table
+          :headers="headers"
+          :items="categories"
+          :hide-default-footer="categories.length < 11"
+        >
+          <template #top>
+            <v-toolbar flat>
+              <v-toolbar-title>
+                <v-icon
+                  color="medium-emphasis"
+                  icon="mdi-tag-multiple"
+                  size="x-small"
+                  start
+                />
+                Categorias
+              </v-toolbar-title>
+              <v-spacer />
+              <v-btn
+                class="me-2"
+                prepend-icon="mdi-plus"
+                rounded="lg"
+                text="Nova Categoria"
+                border
+                @click="add"
+              />
+            </v-toolbar>
+          </template>
 
-  <v-sheet
-    border
-    rounded
-  >
-    <v-data-table
-      :headers="headers"
-      :items="categories"
-      :hide-default-footer="categories.length < 11"
-    >
-      <template #top>
-        <v-toolbar flat>
-          <v-toolbar-title>
-            <v-icon
-              color="medium-emphasis"
-              icon="mdi-tag-multiple"
-              size="x-small"
-              start
-            />
-            Categorias
-          </v-toolbar-title>
-          <v-spacer />
-          <v-btn
-            class="me-2"
-            prepend-icon="mdi-plus"
-            rounded="lg"
-            text="Nova Categoria"
-            border
-            @click="add"
-          />
-        </v-toolbar>
-      </template>
-
-      <template #item.actions="{ item }">
-        <div class="d-flex ga-2 justify-end">
-          <v-icon
-            color="medium-emphasis"
-            icon="mdi-pencil"
-            size="small"
-            @click="edit(item.id)"
-          />
-          <v-icon
-            color="medium-emphasis"
-            icon="mdi-delete"
-            size="small"
-            @click="remove(item.id)"
-          />
-        </div>
-      </template>
-    </v-data-table>
-  </v-sheet>
+          <template #item.actions="{ item }">
+            <div class="d-flex ga-2 justify-end">
+              <v-icon
+                color="medium-emphasis"
+                icon="mdi-pencil"
+                size="small"
+                @click="edit(item.id)"
+              />
+              <v-icon
+                color="medium-emphasis"
+                icon="mdi-delete"
+                size="small"
+                @click="remove(item.id)"
+              />
+            </div>
+          </template>
+        </v-data-table>
+      </v-sheet>
+    </v-container>
+  </v-main>
+  <Footer />
 
   <v-dialog
     v-model="dialog"
@@ -90,6 +99,9 @@
 </template>
 
 <script lang="ts" setup>
+import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
+
 import { ref, onMounted } from 'vue';
 import { useCategoriesStore } from '@/stores/categories';
 import { storeToRefs } from 'pinia';
