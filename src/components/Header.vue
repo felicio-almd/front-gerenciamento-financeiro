@@ -3,6 +3,7 @@
     app
     color="teal"
     density="comfortable"
+    height="80"
   >
     <div class="header-container">
       <div
@@ -19,20 +20,40 @@
 
       <v-spacer />
 
-      <div class="d-flex align-center justify-center ga-4 w-25">
+      <div class="header-links d-flex w-100 ga-4 justify-center lg-align-center">
         <v-btn
           variant="text"
           to="/"
+          class="d-flex justify-center"
         >
-          Movimentações
+          <p class="d-none d-sm-flex">
+            Movimentações
+          </p>
+          <p class="d-sm-none icon-button">
+            <v-icon
+              color="white"
+              icon="mdi-cash-multiple"
+              size="x-large"
+            />
+          </p>
         </v-btn>
         <v-btn  
           variant="text"
           to="/categories"
         >
-          Categorias
+          <p class="d-none d-sm-flex">
+            Categorias
+          </p>
+          <p class="d-sm-none icon-button">
+            <v-icon
+              color="white"
+              icon="mdi-tag-multiple"
+              size="x-large"
+            />
+          </p>
         </v-btn>
       </div>
+      
 
       <v-spacer />
 
@@ -68,10 +89,21 @@ const { logout } = useLogout();
  .header-logo{
   width: 25%;
  }
+ 
 
  @media (max-width: 768px){
+   .header-logo{
+     display: none;
+     width: 0;
+  }
+  
+  .header-links{
+    justify-content: flex-start !important;
+  }
+}
+@media (max-width: 1000px){
   .message-welcome { 
     display: none !important;
   }
-  }
+}
 </style>

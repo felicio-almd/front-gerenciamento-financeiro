@@ -1,9 +1,9 @@
 <template>
   <Header />
   <span class="d-flex align-center w-100 justify-center pt-10">
-    <h1>
+    <h2>
       Lista de Movimentações
-    </h1>
+    </h2>
   </span>
   <v-main class="pt-0">
     <v-container>
@@ -96,6 +96,7 @@
               item-title="text"
               item-value="value"
               label="Tipo da Movimentação"
+              :error-messages="errors.type"
             />
           </v-col>
         </v-row>
@@ -105,6 +106,7 @@
               v-model="record.value"
               label="Valor da Movimentação"
               type="number"
+              :error-messages="errors.value"
               @update:model-value="(val) => record.value = Math.max(0, Number(val))"
             />
           </v-col>
@@ -117,6 +119,7 @@
               item-title="name"
               item-value="id"
               label="Categoria da Movimentação"
+              :error-messages="errors.category_id"
             />
           </v-col>
         </v-row>
@@ -125,6 +128,7 @@
             <v-text-field
               v-model="record.description"
               label="Descrição da Movimentação"
+              :error-messages="errors.description"
             />
           </v-col>
         </v-row>
@@ -141,6 +145,7 @@
         <v-spacer />
         <v-btn
           text="Salvar"
+          :loading="loading"
           @click="save"
         />
       </v-card-actions>
@@ -149,9 +154,8 @@
 </template>
 
 <script lang="ts" setup>
-
-import Header from '@/components/Header.vue'
-
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
 import { ref, onMounted } from 'vue';
 import { useMovementsStore } from '@/stores/movements';
 import { useCategoriesStore } from '@/stores/categories';
@@ -159,12 +163,16 @@ import { storeToRefs } from 'pinia';
 
 const movementsStore = useMovementsStore();
 const categoriesStore = useCategoriesStore();
-const { movements } = storeToRefs(movementsStore);
+const { movements, loading, error } = storeToRefs(movementsStore);
 const { categories } = storeToRefs(categoriesStore);
 
 onMounted(async () => {
-  await movementsStore.getMovements();
-  await categoriesStore.getCategories();
+  try {
+    await movementsStore.getMovements();
+    await categoriesStore.getCategories();
+  } catch (err) {
+    alert('Erro ao carregar dados. Tente novamente mais tarde.');
+  }
 });
 
 const headers = [
@@ -177,16 +185,9 @@ const headers = [
 ];
 
 const movTypes = [
-  {
-    text: 'Entrada',
-    value: 'in'
-  },
-  {
-    text: 'Saída',
-    value: 'out'
-  },
-]
-
+  { text: 'Entrada', value: 'in' },
+  { text: 'Saída', value: 'out' },
+];
 
 const formatDate = (date: string) => {
   return new Intl.DateTimeFormat('pt-BR').format(new Date(date));
@@ -214,10 +215,23 @@ const record = ref({
   description: '',
 });
 
+const errors = ref({
+  type: '',
+  value: '',
+  category_id: '',
+  description: '',
+});
+
 const add = () => {
   isEditing.value = false;
   record.value = {
     id: '',
+    type: '',
+    value: '',
+    category_id: '',
+    description: '',
+  };
+  errors.value = {
     type: '',
     value: '',
     category_id: '',
@@ -231,23 +245,43 @@ const edit = (id: string) => {
   if (movement) {
     isEditing.value = true;
     record.value = { ...movement };
+    errors.value = {
+      type: '',
+      value: '',
+      category_id: '',
+      description: '',
+    };
     dialog.value = true;
   }
 };
 
-const save = () => {
-  if (isEditing.value) {
-    movementsStore.updateMovement(record.value);
-  } else {
-    movementsStore.newMovement(record.value);
+const save = async () => {
+  try {
+    if (isEditing.value) {
+      await movementsStore.updateMovement(record.value);
+    } else {
+      await movementsStore.newMovement(record.value);
+    }
+    dialog.value = false;
+  } catch (err) {
+    if (err.response && err.response.data.errors) {
+      errors.value = {
+        type: err.response.data.errors.type?.[0] || '',
+        value: err.response.data.errors.value?.[0] || '',
+        category_id: err.response.data.errors.category_id?.[0] || '',
+        description: err.response.data.errors.description?.[0] || '',
+      };
+    } else {
+      alert(error.value || 'Erro ao salvar Movimentação. Tente novamente mais tarde.');
+    }
   }
-  dialog.value = false;
 };
 
-const remove = (id: string) => {
-  movementsStore.deleteMovement(id);
+const remove = async (id: string) => {
+  try {
+    await movementsStore.deleteMovement(id);
+  } catch (err) {
+    alert(error.value || 'Erro ao excluir Movimentação. Tente novamente mais tarde.');
+  }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

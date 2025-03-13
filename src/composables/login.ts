@@ -18,13 +18,18 @@ export function useLogin ({data: dataRef}: UserOptions) {
         try{
             await authClient.get('/sanctum/csrf-cookie')
             
-            await authClient.post('/api/login', {
+            const response = await authClient.post('/api/login', {
                 email: data.value?.email,
                 password: data.value?.password
             })
-            setIsLogged(true)
+            if (response.status === 200) {
+                setIsLogged(true); 
+            } else {
+                throw new Error("Credenciais inválidas ou erro no servidor.");
+            }
         } catch(error){
             console.error('Login falhou:', error);
+            throw error;
         } finally {
             loading.value = false
         }
