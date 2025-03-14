@@ -15,31 +15,32 @@ export function useLogin ({data: dataRef}: UserOptions) {
     const {setIsLogged, setUser} = useAuthStore();
 
     const login = async () => {
-        loading.value = true
-        try{
-            await authClient.get('/sanctum/csrf-cookie')
-            
+        loading.value = true;
+        try {
+            await authClient.get('/sanctum/csrf-cookie');
             const response = await authClient.post('/api/login', {
                 email: data.value?.email,
-                password: data.value?.password
-            })
-            
+                password: data.value?.password,
+            });
+            console.log(response);
+    
             if (response.status === 200) {
+                localStorage.setItem('access_token', response.data.access_token);
                 setUser({
                     name: response.data.name,
                     email: response.data.email,
                 });
-                setIsLogged(true); 
+                setIsLogged(true);
             } else {
                 throw new Error("Credenciais inválidas ou erro no servidor.");
             }
-        } catch(error){
+        } catch (error) {
             console.error('Login falhou:', error);
             throw error;
         } finally {
-            loading.value = false
+            loading.value = false;
         }
-    }
+    };
 
     watchEffect(()=>{
         if (!dataRef.value) return

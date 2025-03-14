@@ -2,6 +2,10 @@
 
 Este é o repositório do frontend do projeto **Gerenciamento de Movimentações Financeiras**, desenvolvido com **Vue 3** e **Typescript**. O objetivo é fornecer uma interface moderna e responsiva para gerenciar movimentações financeiras e categorias. 🚀
 
+## Features
+- É possível criar seu usuario e logar com ele para fazer suas movimentações 
+- Cada usuario tem suas proprias movimentações (tabelas relacionadas), as categorias são gerais para todos
+
 ---
 
 ## 🛠️ Tecnologias Utilizadas
@@ -42,9 +46,12 @@ Este é o repositório do frontend do projeto **Gerenciamento de Movimentações
 
 3. **Configure o ambiente:**
 
-   Crie um arquivo `.env` na raiz do projeto e adicione as variáveis de ambiente necessárias (ex: URL do backend).
+   Crie um arquivo `.env.local` na raiz do projeto e adicione as variáveis de ambiente necessárias (ex: URL do backend).
+   ```bash
+   cp .env.example .env.local
+   ```
 
-   Exemplo de `.env`:
+   Exemplo de `.env.local`:
    ```env
    VITE_API_BASE_URL=http://localhost:8000
    ```
