@@ -21,11 +21,17 @@ Este é o repositório do frontend do projeto **Gerenciamento de Movimentações
 - Node.js (v18+)
 - Yarn ou npm
 
+## Junto ao backend
+- PARA QUE AS INFORMAÇÕES POSSAM APARECER, É PRECISO RODAR O BACKEND
+- PARA RODAR O BACKEND CLONE https://github.com/felicio-almd/api-gerenciamento-financeiro.git
+- FAÇA O PASSO A PASSO PARA RODAR O BACKEND COM O BANCO DE DADOS ONLINE
+- Após isso siga os passos abaixo
+
 ### Passos para Configuração
 
 1. **Clone o repositório:**
    ```bash
-   git clone https://github.com/seu-usuario/front-gerenciamento-financeiro.git
+   git clone https://github.com/felicio-almd/front-gerenciamento-financeiro.git
    cd front-gerenciamento-financeiro
    ```
 
@@ -40,7 +46,7 @@ Este é o repositório do frontend do projeto **Gerenciamento de Movimentações
 
    Exemplo de `.env`:
    ```env
-   VITE_API_BASE_URL=http://localhost:8000/
+   VITE_API_BASE_URL=http://localhost:8000
    ```
 
 4. **Inicie o servidor de desenvolvimento:**
