@@ -8,10 +8,11 @@ interface UserOptions {
 }
 
 export function useLogin ({data: dataRef}: UserOptions) {
+    const user = ref<{ name: string; email: string } | null>(null);
     const loading = ref(false);
     const data = ref<AuthOptions>()
 
-    const {setIsLogged} = useAuthStore();
+    const {setIsLogged, setUser} = useAuthStore();
 
     const login = async () => {
         loading.value = true
@@ -22,7 +23,12 @@ export function useLogin ({data: dataRef}: UserOptions) {
                 email: data.value?.email,
                 password: data.value?.password
             })
+            
             if (response.status === 200) {
+                setUser({
+                    name: response.data.name,
+                    email: response.data.email,
+                });
                 setIsLogged(true); 
             } else {
                 throw new Error("Credenciais inválidas ou erro no servidor.");
@@ -40,5 +46,5 @@ export function useLogin ({data: dataRef}: UserOptions) {
         data.value = dataRef.value 
     })
 
-    return {login, loading}
+    return {login, loading, user}
 }

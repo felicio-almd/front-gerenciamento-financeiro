@@ -8,18 +8,28 @@
       elevation="10"
     >
       <v-card-title class="text-h5 font-weight-bold mb-2">
-        Seja bem-vindo!
+        Bem vindo ao cadastro!
       </v-card-title>
       <v-card-subtitle class="mb-6">
-        Por favor, entre com suas credenciais.
+        Por favor, crie sua conta com suas credenciais.
       </v-card-subtitle>
       
       <v-form
-        v-model="isFormValid"
-        @submit.prevent="handleLogin"
+        @submit.prevent="handleRegister"
       >
         <v-text-field
-          v-model="email"
+          v-model="formData.name"
+          :readonly="loading"
+          :rules="[required]"
+          class="mb-4"
+          label="Nome"
+          variant="outlined"
+          clearable
+          prepend-inner-icon="mdi-pencil"
+        />
+
+        <v-text-field
+          v-model="formData.email"
           :readonly="loading"
           :rules="[required]"
           class="mb-4"
@@ -30,7 +40,7 @@
         />
 
         <v-text-field
-          v-model="password"
+          v-model="formData.password"
           :readonly="loading"
           :rules="[required]"
           label="Senha"
@@ -42,16 +52,15 @@
         />
 
         <v-card-subtitle class="w-100 text-center">
-          Não tem conta?  
+          Já tem conta?  
           <RouterLink 
-            to="/register" 
+            to="/login" 
             class="text-primary font-weight-bold text-decoration-none"
           >
-            Cadastre-se aqui
+            Entre aqui
           </RouterLink>
         </v-card-subtitle>
         <v-btn
-          :disabled="!isFormValid"
           :loading="loading"
           color="success"
           size="large"
@@ -60,13 +69,12 @@
           block
           class="mt-4"
         >
-          Entrar
+          Registrar
         </v-btn>
       </v-form>
     </v-card>
   </v-sheet>
   <Footer />
-
   <v-snackbar
     v-model="showError"
     color="error"
@@ -85,46 +93,40 @@
     </template>
   </v-snackbar>
 </template>
-
+  
 <script lang="ts" setup>
-import Footer from '@/components/Footer.vue';
-import { ref, computed } from 'vue';
+  import Footer from '@/components/Footer.vue';
+  import { ref } from 'vue';
+  import { useRegister } from '@/composables/register';
 import { useRouter } from 'vue-router';
-import { useLogin } from '@/composables/login';
+  
+  const router = useRouter();
+  
+  const formData = ref({
+    name: '',
+    email: '',
+    password: '',
+  });
+  
+  const { register, loading } = useRegister({ data: formData });
 
-const email = ref<string>('admin@example.com');
-const password = ref<string>('password');
-const isFormValid = ref<boolean>(false);
-const router = useRouter();
+  const showError = ref(false)
+  const errorMessage = ref('')
 
-const { login, loading  } = useLogin({
-  data: computed(() => ({
-    email: email.value,
-    password: password.value,
-  })),
-});
-
-const showError = ref(false)
-const errorMessage = ref('')
-
-const required = (value: string): boolean | string => !!value || 'Campo obrigatório';
-
-const handleLogin = async (): Promise<void> => {
-  if (!email.value || !password.value) {
-    showError.value = true;
-    errorMessage.value = 'Preencha os campos';
-    return;
-  }
-
-  try {
-    await login();
-    router.push('/');
-  } catch (error) {
-    showError.value = true;
-    errorMessage.value = 'Verifique suas credenciais.';
-  }
-}
-</script>
+  const required = (value: string): boolean | string => !!value || 'Campo obrigatório';
+  
+  const handleRegister = async () => {
+    try {
+      await register();
+      console.log('Registro realizado com sucesso!');
+      router.push('/');
+    } catch (error) {
+        showError.value = true;
+        errorMessage.value = 'Verifique suas credenciais.';
+        console.log('Erro ao registrar: ' + error.message);
+    }
+  };
+  </script>
 
 <style scoped>
 .min-h-screen {

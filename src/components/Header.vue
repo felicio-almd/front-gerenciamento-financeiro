@@ -58,7 +58,7 @@
       <v-spacer />
 
       <div class="d-flex align-center justify-end ga-4 w-25">
-        <span class="message-welcome">Olá! Você está logado!</span>
+        <span class="message-welcome">Bem vindo {{ authStore.user?.name }}!</span>
         <v-btn
           variant="flat"
           color="red"
@@ -73,7 +73,9 @@
 
 <script lang="ts" setup>
 import { useLogout } from '@/composables/logout';
+import { useAuthStore } from '@/stores/auth';
 
+const authStore = useAuthStore();
 const { logout } = useLogout();
 </script>
 
