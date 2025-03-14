@@ -104,10 +104,12 @@
           <v-col cols="12">
             <v-text-field
               v-model="record.value"
+              :min="0"
+              oninput="if(Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
+              max="999999999999999999999999" 
               label="Valor da Movimentação"
               type="number"
               :error-messages="errors.value"
-              @update:model-value="(val) => record.value = Math.max(0, Number(val))"
             />
           </v-col>
         </v-row>
