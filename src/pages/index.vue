@@ -162,6 +162,7 @@ import { ref, onMounted } from 'vue';
 import { useMovementsStore } from '@/stores/movements';
 import { useCategoriesStore } from '@/stores/categories';
 import { storeToRefs } from 'pinia';
+import type { CreateMovementRequest, MovementFormData, UpdateMovementRequest, ValidationError } from '@/types/movements';
 
 const movementsStore = useMovementsStore();
 const categoriesStore = useCategoriesStore();
@@ -183,8 +184,8 @@ const headers = [
   { title: 'Categoria', key: 'category_id' },
   { title: 'Descrição', key: 'description' },
   { title: 'Data de Criação', key: 'created_at' },
-  { title: 'Ações', key: 'actions', sortable: false, align: 'center' },
-];
+  { title: 'Ações', key: 'actions', sortable: false, align: 'center' as const },
+] as const;
 
 const movTypes = [
   { text: 'Entrada', value: 'in' },
@@ -209,7 +210,7 @@ const getCategoryName = (categoryId: string) => {
 
 const dialog = ref(false);
 const isEditing = ref(false);
-const record = ref({
+const record = ref<MovementFormData>({
   id: '',
   type: '',
   value: '',
@@ -246,7 +247,13 @@ const edit = (id: string) => {
   const movement = movements.value.find(m => m.id === id);
   if (movement) {
     isEditing.value = true;
-    record.value = { ...movement };
+    record.value = { 
+      id: movement.id,
+      type: movement.type,
+      value: movement.value.toString(),
+      category_id: movement.category_id,
+      description: movement.description,
+    };
     errors.value = {
       type: '',
       value: '',
@@ -259,22 +266,33 @@ const edit = (id: string) => {
 
 const save = async () => {
   try {
+    const movementData = {
+      type: record.value.type,
+      value: parseFloat(record.value.value),
+      category_id: record.value.category_id,
+      description: record.value.description,
+    };
+
     if (isEditing.value) {
-      await movementsStore.updateMovement(record.value);
+      await movementsStore.updateMovement({
+        id: record.value.id,
+        ...movementData,
+      } as UpdateMovementRequest);
     } else {
-      await movementsStore.newMovement(record.value);
+      await movementsStore.newMovement(movementData as CreateMovementRequest);
     }
     dialog.value = false;
-  } catch (err) {
-    if (err.response && err.response.data.errors) {
+  } catch (err: unknown) {
+    if (isValidationError(err)) {
       errors.value = {
-        type: err.response.data.errors.type?.[0] || '',
-        value: err.response.data.errors.value?.[0] || '',
-        category_id: err.response.data.errors.category_id?.[0] || '',
-        description: err.response.data.errors.description?.[0] || '',
+        type: err.response?.data?.errors?.type?.[0] || '',
+        value: err.response?.data?.errors?.value?.[0] || '',
+        category_id: err.response?.data?.errors?.category_id?.[0] || '',
+        description: err.response?.data?.errors?.description?.[0] || '',
       };
     } else {
-      alert(error.value || 'Erro ao salvar Movimentação. Tente novamente mais tarde.');
+      console.error('Error saving movement:', err);
+      alert('Erro ao salvar Movimentação. Tente novamente mais tarde.');
     }
   }
 };
@@ -286,4 +304,14 @@ const remove = async (id: string) => {
     alert(error.value || 'Erro ao excluir Movimentação. Tente novamente mais tarde.');
   }
 };
+
+function isValidationError(error: unknown): error is ValidationError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'response' in error &&
+    typeof (error as any).response === 'object'
+  );
+}
+
 </script>

@@ -106,6 +106,7 @@ import Footer from '@/components/Footer.vue';
 import { ref, onMounted } from 'vue';
 import { useCategoriesStore } from '@/stores/categories';
 import { storeToRefs } from 'pinia';
+import type { CreateCategoryRequest, UpdateCategoryRequest, ValidationError } from '@/types/categories';
 
 const store = useCategoriesStore();
 const { categories, loading } = storeToRefs(store);
@@ -131,8 +132,8 @@ onMounted(async () => {
 
 const headers = [
   { title: 'Nome', key: 'name' },
-  { title: 'Ações', key: 'actions', align: 'end' },
-];
+  { title: 'Ações', key: 'actions', align: 'end' as const },
+] as const;
 
 const add = () => {
   isEditing.value = false;
@@ -162,19 +163,34 @@ const remove = async (id: string) => {
 const save = async () => {
   try {
     if (isEditing.value) {
-      await store.updateCategory({ id: record.value.id, name: record.value.name });
+      await store.updateCategory({ 
+        id: record.value.id, 
+        name: record.value.name 
+      } as UpdateCategoryRequest);
     } else {
-      await store.newCategory({ name: record.value.name });
+      await store.newCategory({ 
+        name: record.value.name 
+      } as CreateCategoryRequest);
     }
     dialog.value = false;
-  } catch (err) {
-    if (err.response && err.response.data.errors) {
+  } catch (err: unknown) {
+    if (isValidationError(err)) {
       errors.value = {
-        name: err.response.data.errors.name?.[0] || '',
+        name: err.response?.data?.errors?.name?.[0] || '',
       };
     } else {
+      console.error('Error saving category:', err);
       alert('Erro ao salvar categoria. Tente novamente mais tarde.');
     }
   }
 };
+
+function isValidationError(error: unknown): error is ValidationError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'response' in error &&
+    typeof (error as any).response === 'object'
+  );
+}
 </script>

@@ -1,5 +1,5 @@
 import { authenticatedClient } from "@/http/client";
-import type { Movement } from "@/types/movements";
+import type { CreateMovementRequest, Movement, UpdateMovementRequest } from "@/types/movements";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
@@ -23,12 +23,13 @@ export const useMovementsStore = defineStore('movements', () => {
         }
     };
 
-    const newMovement = async (movementData: Movement) => {
+    const newMovement = async (movementData: CreateMovementRequest): Promise<Movement> => {
         loading.value = true;
         error.value = null;
         try {
             const response = await authenticatedClient.post<Movement>('/movements', movementData);
             movements.value.push(response.data);
+            return response.data;
         } catch (err) {
             error.value = "Erro ao criar Movimentação. Tente novamente mais tarde.";
             console.error(err);
@@ -38,7 +39,7 @@ export const useMovementsStore = defineStore('movements', () => {
         }
     };
 
-    const updateMovement = async (movementData: Movement) => {
+    const updateMovement = async (movementData: UpdateMovementRequest): Promise<Movement> => {
         loading.value = true;
         error.value = null;
         try {
@@ -47,6 +48,7 @@ export const useMovementsStore = defineStore('movements', () => {
             if (index !== -1) {
                 movements.value[index] = response.data;
             }
+            return response.data;
         } catch (err) {
             error.value = "Erro ao atualizar Movimentação. Tente novamente mais tarde.";
             console.error(err);

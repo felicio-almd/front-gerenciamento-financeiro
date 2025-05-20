@@ -2,9 +2,18 @@
 
 Este é o repositório do frontend do projeto **Gerenciamento de Movimentações Financeiras**, desenvolvido com **Vue 3** e **Typescript**. O objetivo é fornecer uma interface moderna e responsiva para gerenciar movimentações financeiras e categorias. 🚀
 
-## Features
-- É possível criar seu usuario e logar com ele para fazer suas movimentações 
-- Cada usuario tem suas proprias movimentações (tabelas relacionadas), as categorias são gerais para todos
+🌐 Aplicação em Produção
+A aplicação está disponível em produção e pode ser acessada através da Vercel:
+🔗 Acesse a aplicação: 
+
+🎯 Features
+
+✅ Autenticação completa - Criação de usuário e sistema de login seguro
+💼 Gestão personalizada - Cada usuário tem suas próprias movimentações (tabelas relacionadas)
+🏷️ Categorias compartilhadas - Sistema de categorias global para todos os usuários
+📱 Interface responsiva - Funciona perfeitamente em desktop, tablet e mobile
+🔄 Sincronização em tempo real - Conectado a uma API própria em produção
+📊 Visualização intuitiva - Interface limpa e moderna para melhor experiência do usuário
 
 ---
 
@@ -18,6 +27,19 @@ Este é o repositório do frontend do projeto **Gerenciamento de Movimentações
 - **Vite** ⚡ (para build e desenvolvimento)
 
 ---
+
+🌐 Arquitetura
+Frontend (Este repositório)
+
+Hospedagem: Vercel
+Deploy automatizado via GitHub
+
+Backend (API própria) [link backend]
+
+API REST desenvolvida e mantida por mim
+Em produção com alta disponibilidade
+Autenticação JWT para segurança
+Banco de dados relacional para integridade dos dados
 
 ## 🚀 Como Executar o Projeto
 

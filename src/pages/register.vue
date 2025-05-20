@@ -123,7 +123,7 @@ import { useRouter } from 'vue-router';
     } catch (error) {
         showError.value = true;
         errorMessage.value = 'Verifique suas credenciais.';
-        console.log('Erro ao registrar: ' + error.message);
+        console.log('Erro ao registrar: ' + errorMessage.value);
     }
   };
   </script>

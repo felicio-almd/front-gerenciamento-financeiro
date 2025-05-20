@@ -8,7 +8,10 @@
       elevation="10"
     >
       <v-card-title class="text-h5 font-weight-bold mb-2">
-        Seja bem-vindo!
+        Seja bem-vindo! 
+      </v-card-title>
+      <v-card-title class="mb-6">
+        App Movimentações financeiras!
       </v-card-title>
       <v-card-subtitle class="mb-6">
         Por favor, entre com suas credenciais.
@@ -92,8 +95,8 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useLogin } from '@/composables/login';
 
-const email = ref<string>('admin@example.com');
-const password = ref<string>('password');
+const email = ref<string>('');
+const password = ref<string>('');
 const isFormValid = ref<boolean>(false);
 const router = useRouter();
 
