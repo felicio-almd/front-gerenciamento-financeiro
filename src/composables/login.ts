@@ -25,8 +25,6 @@ export function useLogin({ data: dataRef }: UserOptions) {
                 password: data.value?.password,
             });
 
-            console.log('Login response:', response);
-
             if (response.status === 200) {
                 if (response.data.access_token) {
                     localStorage.setItem('access_token', response.data.access_token);

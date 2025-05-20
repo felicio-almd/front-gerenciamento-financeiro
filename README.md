@@ -2,18 +2,18 @@
 
 Este é o repositório do frontend do projeto **Gerenciamento de Movimentações Financeiras**, desenvolvido com **Vue 3** e **Typescript**. O objetivo é fornecer uma interface moderna e responsiva para gerenciar movimentações financeiras e categorias. 🚀
 
-🌐 Aplicação em Produção
+# 🌐 Aplicação em Produção
 A aplicação está disponível em produção e pode ser acessada através da Vercel:
-🔗 Acesse a aplicação: 
+🔗 Acesse a aplicação: https://front-gerenciamento-financeiro.vercel.app/
 
-🎯 Features
+# 🎯 Features
 
-✅ Autenticação completa - Criação de usuário e sistema de login seguro
-💼 Gestão personalizada - Cada usuário tem suas próprias movimentações (tabelas relacionadas)
-🏷️ Categorias compartilhadas - Sistema de categorias global para todos os usuários
-📱 Interface responsiva - Funciona perfeitamente em desktop, tablet e mobile
-🔄 Sincronização em tempo real - Conectado a uma API própria em produção
-📊 Visualização intuitiva - Interface limpa e moderna para melhor experiência do usuário
+- ✅ **Autenticação completa** - Criação de usuário e sistema de login seguro
+- 💼 **Gestão personalizada** - Cada usuário tem suas próprias movimentações (tabelas relacionadas)
+- 🏷️ **Categorias compartilhadas** - Sistema de categorias global para todos os usuários
+- 📱 **Interface responsiva** - Funciona perfeitamente em desktop, tablet e mobile
+- 🔄 **Sincronização em tempo real** - Conectado a uma API própria em produção
+- 📊 **Visualização intuitiva** - Interface limpa e moderna para melhor experiência do usuário
 
 ---
 
@@ -28,17 +28,17 @@ A aplicação está disponível em produção e pode ser acessada através da Ve
 
 ---
 
-🌐 Arquitetura
+# 🌐 Arquitetura
 Frontend (Este repositório)
 
 Hospedagem: Vercel
 Deploy automatizado via GitHub
 
-Backend (API própria) [link backend]
+Backend (API própria) [Repositorio](https://github.com/felicio-almd/api-gerenciamento-financeiro) / [Api](https://api-gerenciamento-financeiro-vqi8.onrender.com/)
 
-API REST desenvolvida e mantida por mim
-Em produção com alta disponibilidade
-Autenticação JWT para segurança
+API REST desenvolvida e mantida por mim\
+Em produção com alta disponibilidade\
+Autenticação JWT para segurança\
 Banco de dados relacional para integridade dos dados
 
 ## 🚀 Como Executar o Projeto
